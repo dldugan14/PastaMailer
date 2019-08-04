@@ -21,6 +21,7 @@
   "homepage": "https://github.com/dldugan14/PastaMailer#readme",
   "dependencies": {},
   "devDependencies": {
-    "concurrently": "^4.1.1"
+    "concurrently": "^4.1.1",
+    "husky": "^3.0.2"
   }
 }
