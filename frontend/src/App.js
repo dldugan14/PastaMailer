@@ -1,15 +1,26 @@
 import React from "react";
-// import logo from "./logo.svg";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { ThemeProvider } from "@material-ui/styles";
 import "./App.css";
+import Login from "./conponents/login";
+import Header from "./conponents/Header/Header";
+import theme from "./theme";
+import { createMemoryHistory } from "history";
 
-function App() {
+const history = createMemoryHistory();
+
+export default function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <div>Login</div>
-      </header>
+      <ThemeProvider theme={theme}>
+        <Header />
+        <Router history={history}>
+          <Switch>
+            <Route path="/" component={Login} />
+            <Route path="/dicks" render={() => <div>Dicks</div>} />
+          </Switch>
+        </Router>
+      </ThemeProvider>
     </div>
   );
 }
-
-export default App;
