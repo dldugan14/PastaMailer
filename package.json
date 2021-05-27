@@ -18,15 +18,16 @@
   },
   "homepage": "https://github.com/dldugan14/PastaMailer#readme",
   "dependencies": {
-    "@vonage/server-sdk": "^2.10.8",
     "atpl": "^0.9.3",
     "dotenv": "^8.0.0",
+    "eslint": "^7.27.0",
     "http": "0.0.0",
     "koa": "^2.7.0",
     "koa-ejs": "^4.2.0",
     "koa-json": "^2.0.2",
     "koa-router": "^7.4.0",
-    "node-schedule": "^1.3.2"
+    "node-schedule": "^1.3.2",
+    "twilio": "^3.63.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.3",
