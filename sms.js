@@ -1,7 +1,7 @@
 
 
 
-export default function sendMessages(message, numbers) {
+function sendMessages(message, numbers) {
   const client = require('twilio')(process.env.SID, process.env.TOKEN);
   numbers.map((number) => {
     client.messages.create({
@@ -13,3 +13,4 @@ export default function sendMessages(message, numbers) {
   })
 }
 
+module.exports = { sendMessages }

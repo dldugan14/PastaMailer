@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  pastamailer:
+    image: pastamailer
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/usr/src/app
+    links:
+      - mongodb
+  mongodb: 
+    image: mongo:4.4.6
+    ports: 
+      - 27017:27017
+    volumes:
+      - data:/data/db
+
+
+volumes: 
+  data:
