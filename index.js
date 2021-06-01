@@ -1,12 +1,14 @@
 require("dotenv").config();
 
 const http = require('http');
-const express = require('express')
-const { scheduler, addToList, removeFromList } = require('./scheduler');
-const { sendMessages } = require("./sms");
-const schedule = require('node-schedule');
+const express = require('express');
+const bodyParser = require('body-parser');
+
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-const bodyParser = require('body-parser')
+
+const schedule = require('node-schedule');
+const { scheduler, addToList, removeFromList } = require('./util/scheduler');
+const { sendMessages } = require("./util/sms");
 
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://mongodb:27017/pasta', { useNewUrlParser: true, useUnifiedTopology: true })

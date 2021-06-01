@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path')
-const { Users } = require('./models/users')
+const { Users } = require('../models/users')
 // const { rotation } = require('./models/rotation')
 
 async function scheduler() {
