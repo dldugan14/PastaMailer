@@ -1,30 +1,40 @@
-const fs = require('fs');
-const path = require('path')
 const { Users } = require('../models/users')
-// const { rotation } = require('./models/rotation')
+const { Rotation } = require('../models/rotation')
+const { LastUp } = require('../models/lastUp')
 
 async function scheduler() {
-    console.log(Users)
-    let thing = await Users.find({});
-    console.log(thing)
-    // const db = JSON.parse(fs.readFileSync(path.resolve('rotation.json'), 'utf8'));
-    // let { rotation, lastUp, numberList } = db;
-    // let nextUp = ''
+    const users = await Users.find();
+    const rotationData = await Rotation.find();
+    const lastUp = await LastUp.find();
 
-    // if (rotation.indexOf(lastUp) === rotation.length - 1) {
-    //     nextUp = rotation[0]
-    // } else {
-    //     nextUp = rotation[rotation.indexOf(lastUp) + 1]
-    // }
+    let nextUp = ''
 
-    // db.lastUp = nextUp;
+    const validNextUpCandidates = rotationData
+    .filter((ele) => {if(ele.active && !ele.skip) {return true}else return false})
+    .sort((a, b) => {
+        if (a.rotationPosition < b.rotationPosition) {
+            return -1;
+          }
+          if (a.rotationPosition > b.rotationPosition) {
+            return 1;
+          }
+          return 0;
+    })
+    
 
-    // fs.writeFileSync()
-    // console.log(nextUp)${nextUp}
+const findNextUpIndex = (ele)=> {
+    return ele.rotationPosition === lastUp
+}
+
+    if (validNextUpCandidates.findIndex(findNextUpIndex) === validNextUpCandidates.length - 1) {
+        nextUp = validNextUpCandidates[0]
+    } else {
+        nextUp = validNextUpCandidates[validNextUpCandidates.findIndex(findNextUpIndex) + 1]
+    }
 
     return {
-        message: `This week, pasta is at 's house. Cheers!`,
-        // numberList: numberList
+        message: `This week, pasta is at ${nextUp.names}'s house. Cheers!`,
+        numberList: users.map((user) => user.phoneNumber)
     }
 }
 

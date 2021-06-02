@@ -30,6 +30,10 @@ app.use(bodyParser.json())
 // Every Friday at 12pm  "0 12 * * 5"
 // schedule.scheduleJob("*/10 * * * * *", async function () {
 //      console.log('cronjob')
+// const { Updated } = require('../models/updated')
+//     const updated = await Updated.find();
+
+    // if(updated)
 //      const { message, numberList } = await scheduler()
 //      console.log(message, numberList)
 //      // sendMessages(message, numberList)

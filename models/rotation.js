@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const rotationSchema = new Schema({
-    rotation: [{
+const rotationSchema = new Schema([{
         names: String,
         id: String,
         rotationPosition: Number,
         skip: Boolean,
         active: Boolean
-    }],
-    lastUp: String,
-    updated: { type: Date, default: Date.now },
-})
+    }])
 
-module.exports.rotation = mongoose.model('rotation', rotationSchema, 'Rotation')
+module.exports.Rotation = mongoose.model('rotation', rotationSchema, 'rotation')
