@@ -16,6 +16,8 @@ const { sendMessages } = require("./util/sms");
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://mongodb:27017/pasta', { useNewUrlParser: true, useUnifiedTopology: true })
 
+let STOP = false;
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'CONNECTION ERROR'))
 db.once('open', function () {
@@ -32,7 +34,7 @@ app.use(bodyParser.json())
 
 // Every Friday at 12pm  "0 12 * * 5"
 schedule.scheduleJob("0 12 * * 5", async function () {
-
+if(!STOP){
      const updatedData = await Updated.find();
      const lastUpdated = moment(updatedData.updated)
 
@@ -42,6 +44,7 @@ schedule.scheduleJob("0 12 * * 5", async function () {
           sendMessages(message, numberList)
           Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
      }
+}
 });
 
 app.post('/sms', (req, res) => {
@@ -62,6 +65,9 @@ app.post('/sms', (req, res) => {
      res.end(twiml.toString());
 });
 
+app.get('/emergencystop', (req, res) => {
+     STOP = true;
+});
 
 app.get('/test', (req, res) => {
 
