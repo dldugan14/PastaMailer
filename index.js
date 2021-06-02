@@ -34,14 +34,14 @@ app.use(bodyParser.json())
 schedule.scheduleJob("0 12 * * 5", async function () {
 
      const updatedData = await Updated.find();
-const lastUpdated = moment(updatedData.updated)
+     const lastUpdated = moment(updatedData.updated)
 
-if(moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()){
-     console.log('TGIF sending messages')
-     const { message, numberList } = await scheduler()
-     sendMessages(message, numberList)
-     Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
-}
+     if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
+          console.log('TGIF sending messages')
+          const { message, numberList } = await scheduler()
+          sendMessages(message, numberList)
+          Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
+     }
 });
 
 app.post('/sms', (req, res) => {
@@ -64,7 +64,7 @@ app.post('/sms', (req, res) => {
 
 
 app.get('/test', (req, res) => {
-  
+
 
      res.writeHead(200, { 'Content-Type': 'text/xml' });
      res.end('hello');
