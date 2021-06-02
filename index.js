@@ -33,7 +33,7 @@ app.use(bodyParser.json())
 // const { Updated } = require('../models/updated')
 //     const updated = await Updated.find();
 
-    // if(updated)
+// if(updated)
 //      const { message, numberList } = await scheduler()
 //      console.log(message, numberList)
 //      // sendMessages(message, numberList)

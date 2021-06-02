@@ -10,21 +10,21 @@ async function scheduler() {
     let nextUp = ''
 
     const validNextUpCandidates = rotationData
-    .filter((ele) => {if(ele.active && !ele.skip) {return true}else return false})
-    .sort((a, b) => {
-        if (a.rotationPosition < b.rotationPosition) {
-            return -1;
-          }
-          if (a.rotationPosition > b.rotationPosition) {
-            return 1;
-          }
-          return 0;
-    })
-    
+        .filter((ele) => { if (ele.active && !ele.skip) { return true } else return false })
+        .sort((a, b) => {
+            if (a.rotationPosition < b.rotationPosition) {
+                return -1;
+            }
+            if (a.rotationPosition > b.rotationPosition) {
+                return 1;
+            }
+            return 0;
+        })
 
-const findNextUpIndex = (ele)=> {
-    return ele.rotationPosition === lastUp
-}
+
+    const findNextUpIndex = (ele) => {
+        return ele.rotationPosition === lastUp
+    }
 
     if (validNextUpCandidates.findIndex(findNextUpIndex) === validNextUpCandidates.length - 1) {
         nextUp = validNextUpCandidates[0]
