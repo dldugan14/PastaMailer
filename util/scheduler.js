@@ -39,6 +39,14 @@ async function scheduler() {
     return {
         message: `This week, pasta is at ${nextUp.names}'s house. Cheers! \n\n\nP.S. To remove yourself from this list reply to this number with "STOP"`,
         numberList: users.filter((user) => {
+            if (user.firstName === 'Geoff' && nextup.names !== 'Geoff and Karina'){
+                return false
+            }
+
+            if ((user.firstName === 'Lisa' || user.firstName === 'Kenny') && nextup.names === 'Geoff and Karina') {
+                return false
+            }
+
             if (user.active) {
                 return true
             } else {
