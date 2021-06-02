@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
+const { Updated } = require('./models/updated')
+const moment = require('moment')
+
 const schedule = require('node-schedule');
 const { scheduler, addToList, removeFromList } = require('./util/scheduler');
 const { sendMessages } = require("./util/sms");
@@ -28,16 +31,18 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Every Friday at 12pm  "0 12 * * 5"
-// schedule.scheduleJob("*/10 * * * * *", async function () {
-//      console.log('cronjob')
-// const { Updated } = require('../models/updated')
-//     const updated = await Updated.find();
+schedule.scheduleJob("0 12 * * 5", async function () {
 
-// if(updated)
-//      const { message, numberList } = await scheduler()
-//      console.log(message, numberList)
-//      // sendMessages(message, numberList)
-// });
+     const updatedData = await Updated.find();
+const lastUpdated = moment(updatedData.updated)
+
+if(moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()){
+     const { message, numberList } = await scheduler()
+     console.log(message, numberList)
+     sendMessages(message, numberList)
+     Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
+}
+});
 
 app.post('/sms', (req, res) => {
      const twiml = new MessagingResponse();
