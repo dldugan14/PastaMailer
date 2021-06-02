@@ -35,9 +35,9 @@ async function scheduler() {
     }
 
     const res = await LastUp.updateOne({ lastUp: lastUp }, { lastUp: nextUp.rotationPosition });
-
+    
     return {
-        message: `This week, pasta is at ${nextUp.names}'s house. Cheers! \n P.S. To remove yourself from this list reply to this number with "STOP"`,
+        message: `This week, pasta is at ${nextUp.names}'s house. Cheers! \n\n\nP.S. To remove yourself from this list reply to this number with "STOP"`,
         numberList: users.filter((user) => {
             if (user.active) {
               return true

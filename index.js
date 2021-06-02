@@ -37,8 +37,8 @@ schedule.scheduleJob("0 12 * * 5", async function () {
 const lastUpdated = moment(updatedData.updated)
 
 if(moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()){
+     console.log('TGIF sending messages')
      const { message, numberList } = await scheduler()
-     console.log(message, numberList)
      sendMessages(message, numberList)
      Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
 }
@@ -62,14 +62,14 @@ app.post('/sms', (req, res) => {
      res.end(twiml.toString());
 });
 
-app.get("/test", async (req, res) => {
-     // const { message, numberList } = await scheduler()
-     // console.log(message)
-     addToList("6027992730")
+
+app.get('/test', (req, res) => {
+  
+
      res.writeHead(200, { 'Content-Type': 'text/xml' });
-     res.end('Hello World');
+     res.end('hello');
 });
 
 http.createServer(app).listen(process.env.PORT || 4000, () => {
-     console.log('Express server listening on port 4000');
+     console.log(`Express server listening on port ${process.env.PORT || 4000}`);
 });

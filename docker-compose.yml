@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   pastamailer:
+    restart: unless-stopped
     image: pastamailer
     build:
       context: .
@@ -9,12 +10,13 @@ services:
     environment:
       NODE_ENV: production
     ports:
-      - 4000:4000
+      - 1492:4000
     volumes:
       - .:/usr/src/app
     links:
       - mongodb
   mongodb: 
+    restart: unless-stopped
     image: mongo:4.4.6
     ports: 
       - 27017:27017
