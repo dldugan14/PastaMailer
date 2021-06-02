@@ -5,10 +5,12 @@ const { LastUp } = require('../models/lastUp')
 async function scheduler() {
     const users = await Users.find();
     const rotationData = await Rotation.find();
-    const lastUp = await LastUp.find();
+    const lastUpData = await LastUp.find();
+    const lastUp = lastUpData[0].lastUp
 
     let nextUp = ''
 
+    console.log('lastup', lastUp)
     const validNextUpCandidates = rotationData
         .filter((ele) => { if (ele.active && !ele.skip) { return true } else return false })
         .sort((a, b) => {
@@ -32,19 +34,27 @@ async function scheduler() {
         nextUp = validNextUpCandidates[validNextUpCandidates.findIndex(findNextUpIndex) + 1]
     }
 
+    const res = await LastUp.updateOne({ lastUp: lastUp }, { lastUp: nextUp.rotationPosition });
+
     return {
         message: `This week, pasta is at ${nextUp.names}'s house. Cheers!`,
-        numberList: users.map((user) => user.phoneNumber)
+        numberList: users.filter((user) => {
+            if (user.active) {
+              return true
+            } else {
+                return false
+            }
+        }).map((ele)=> ele.phoneNumber)
     }
 }
 
-function removeFromList(number) {
-
+async function removeFromList(number) {
+    const res = await Users.updateOne({ phoneNumber: number }, { active: false });
 }
 
 
-function addToList(number) {
-
+async function addToList(number) {
+    const res = await Users.updateOne({ phoneNumber: number }, { active: true });
 }
 
 module.exports = { addToList, removeFromList, scheduler }

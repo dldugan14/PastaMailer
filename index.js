@@ -58,9 +58,9 @@ app.post('/sms', (req, res) => {
 });
 
 app.get("/test", async (req, res) => {
-     console.log(db.models)
-     const { message, numberList } = await scheduler()
-     console.log(message, numberList)
+     // const { message, numberList } = await scheduler()
+     // console.log(message)
+     addToList("6027992730")
      res.writeHead(200, { 'Content-Type': 'text/xml' });
      res.end('Hello World');
 });
