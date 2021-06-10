@@ -4,16 +4,17 @@ const { LastUp } = require('../models/lastUp');
 const { Logger } = require('./logger');
 
 async function scheduler() {
-    const users = []
-    const rotationData = []
-    const lastUpData = []
+    let users = []
+    let rotationData = []
+    let lastUpData = []
 
     try {
         users = await Users.find();
         rotationData = await Rotation.find();
         lastUpData = await LastUp.find();
     } catch (error) {
-
+        Logger(`db Connection error: ${error}`)
+        return null;
     }
 
     const lastUp = lastUpData[0].lastUp
@@ -53,11 +54,11 @@ async function scheduler() {
     }
 
     const numberList = users.filter((user) => {
-        if (user.firstName === 'Geoff' && nextup.names !== 'Geoff and Karina') {
+        if (user.firstName === 'Geoff' && nextUp.names !== 'Geoff and Karina') {
             return false
         }
 
-        if ((user.firstName === 'Lisa' || user.firstName === 'Kenny') && nextup.names === 'Geoff and Karina') {
+        if ((user.firstName === 'Lisa' || user.firstName === 'Kenny') && nextUp.names === 'Geoff and Karina') {
             return false
         }
 

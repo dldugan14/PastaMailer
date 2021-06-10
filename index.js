@@ -34,18 +34,25 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Every Friday at 12pm  "0 12 * * 5"
-schedule.scheduleJob("0 12 * * 5", async function () {
+let cron = schedule.scheduleJob("0 12 * * 5", async function () {
      if (!STOP) {
           const updatedData = await Updated.find();
-          const lastUpdated = moment(updatedData.updated)
+          const lastUpdated = moment(updatedData[0].updated)
 
           if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
-               console.log('TGIF sending messages')
+
+               Logger('TGIF sending messages')
                const { message, numberList } = await scheduler()
+
                sendMessages(message, numberList)
+
                Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
+          } else {
+               Logger(`Blocked by updated check\n    last updated ${lastUpdated.toString()}`)
           }
-     } else { Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`) };
+     } else {
+          Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`)
+     };
 });
 
 app.post('/sms', (req, res) => {
