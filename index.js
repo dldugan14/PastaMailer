@@ -13,7 +13,8 @@ const schedule = require('node-schedule');
 const { scheduler, addToList, removeFromList } = require('./util/scheduler');
 const { sendMessages } = require("./util/sms");
 
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { Logger } = require("./util/logger");
 mongoose.connect('mongodb://mongodb:27017/pasta', { useNewUrlParser: true, useUnifiedTopology: true })
 
 let STOP = false;
@@ -44,13 +45,13 @@ if(!STOP){
           sendMessages(message, numberList)
           Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
      }
-}
+}else { Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`) };
 });
 
 app.post('/sms', (req, res) => {
      const twiml = new MessagingResponse();
      const { Body, From } = req.body;
-
+     Logger(`Incoming Message:\n    From - ${From}\n    Message - ${Body}`)
      if (Body.toLowerCase().includes('stop')) {
           removeFromList(From.slice(1))
           twiml.message('Gotcha, you have been removed from the pasta notifications.');
@@ -58,6 +59,7 @@ app.post('/sms', (req, res) => {
           addToList(From.slice(1))
           twiml.message('Welcome Back! You have been added to the pasta notifications.');
      } else {
+          
           twiml.message('Sorry Dillon didn\'t program in a response to that. 😅 ');
      }
 
@@ -69,9 +71,14 @@ app.get('/emergencystop', (req, res) => {
      STOP = true;
 });
 
+app.get('/emergencystopstatus', (req, res) => {
+     res.writeHead(200, { 'Content-Type': 'text/xml' });
+     res.end(`${STOP}`);
+});
+
 app.get('/test', (req, res) => {
 
-
+     Logger('Test')
      res.writeHead(200, { 'Content-Type': 'text/xml' });
      res.end('hello');
 });

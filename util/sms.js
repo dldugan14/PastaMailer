@@ -1,3 +1,4 @@
+const { Logger } = require('./logger');
 
 
 
@@ -9,7 +10,13 @@ function sendMessages(message, numbers) {
       from: process.env.FROMNUM,
       to: number
     })
-      .then(message => console.log(message.sid));
+      .then(message => {
+        console.log(message.sid);
+        Logger(`Message sent Succssefully:\n    Number - ${number}\n     SID - ${message.sid}`);
+      })
+      .catch((error)=> {
+        Logger(`ERROR: Message send failed.\n    error: ${error}`)
+      });
   })
 }
 
