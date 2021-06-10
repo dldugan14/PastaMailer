@@ -1,8 +1,8 @@
 const fs = require('fs')
+const moment = require('moment')
 
 function Logger(message) {
-    const now = new Date()
-    fs.appendFileSync('/usr/src/app/main.log', `\n${now.toString()} - ${message}`)
+    fs.appendFileSync('/usr/src/app/main.log', `\n${moment().toString()} - ${message}`)
 };
 
 
