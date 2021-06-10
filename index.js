@@ -35,17 +35,17 @@ app.use(bodyParser.json())
 
 // Every Friday at 12pm  "0 12 * * 5"
 schedule.scheduleJob("0 12 * * 5", async function () {
-if(!STOP){
-     const updatedData = await Updated.find();
-     const lastUpdated = moment(updatedData.updated)
+     if (!STOP) {
+          const updatedData = await Updated.find();
+          const lastUpdated = moment(updatedData.updated)
 
-     if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
-          console.log('TGIF sending messages')
-          const { message, numberList } = await scheduler()
-          sendMessages(message, numberList)
-          Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
-     }
-}else { Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`) };
+          if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
+               console.log('TGIF sending messages')
+               const { message, numberList } = await scheduler()
+               sendMessages(message, numberList)
+               Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
+          }
+     } else { Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`) };
 });
 
 app.post('/sms', (req, res) => {
@@ -59,7 +59,7 @@ app.post('/sms', (req, res) => {
           addToList(From.slice(1))
           twiml.message('Welcome Back! You have been added to the pasta notifications.');
      } else {
-          
+
           twiml.message('Sorry Dillon didn\'t program in a response to that. 😅 ');
      }
 

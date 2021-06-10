@@ -13,15 +13,15 @@ async function scheduler() {
         rotationData = await Rotation.find();
         lastUpData = await LastUp.find();
     } catch (error) {
-        
+
     }
-   
+
     const lastUp = lastUpData[0].lastUp
 
     let nextUp = ''
 
     Logger('Last up ' + lastUp)
-    
+
     const validNextUpCandidates = rotationData
         .filter((ele) => { if (ele.active && !ele.skip) { return true } else return false })
         .sort((a, b) => {
@@ -51,22 +51,22 @@ async function scheduler() {
     } catch (error) {
         Logger(`ERROR: db connection issue: ${error}`)
     }
-    
+
     const numberList = users.filter((user) => {
-            if (user.firstName === 'Geoff' && nextup.names !== 'Geoff and Karina'){
-                return false
-            }
+        if (user.firstName === 'Geoff' && nextup.names !== 'Geoff and Karina') {
+            return false
+        }
 
-            if ((user.firstName === 'Lisa' || user.firstName === 'Kenny') && nextup.names === 'Geoff and Karina') {
-                return false
-            }
+        if ((user.firstName === 'Lisa' || user.firstName === 'Kenny') && nextup.names === 'Geoff and Karina') {
+            return false
+        }
 
-            if (user.active) {
-                return true
-            } else {
-                return false
-            }
-        }).map((ele) => ele.phoneNumber)
+        if (user.active) {
+            return true
+        } else {
+            return false
+        }
+    }).map((ele) => ele.phoneNumber)
 
     Logger(`List of numbers: ${numberList}`)
     return {

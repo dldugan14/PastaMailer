@@ -14,7 +14,7 @@ function sendMessages(message, numbers) {
         console.log(message.sid);
         Logger(`Message sent Succssefully:\n    Number - ${number}\n     SID - ${message.sid}`);
       })
-      .catch((error)=> {
+      .catch((error) => {
         Logger(`ERROR: Message send failed.\n    error: ${error}`)
       });
   })
