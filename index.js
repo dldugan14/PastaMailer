@@ -50,8 +50,8 @@ let cron = schedule.scheduleJob("0 19 * * 5", async function () {
           } else {
                Logger(`Blocked by updated check\n    last updated ${lastUpdated.toString()}`)
           }
-     } else { 
-          Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`) 
+     } else {
+          Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`)
      };
 });
 
@@ -66,7 +66,7 @@ app.post('/sms', (req, res) => {
           addToList(From.slice(1))
           twiml.message('Welcome Back! You have been added to the pasta notifications.');
      } else {
-          
+
           twiml.message('Sorry Dillon didn\'t program in a response to that. 😅 ');
      }
 
