@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Every Friday at 12pm  "0 12 * * 5"
-let cron = schedule.scheduleJob("0 12 * * 5", async function () {
+let cron = schedule.scheduleJob("0 19 * * 5", async function () {
      if(!STOP){
           const updatedData = await Updated.find();
           const lastUpdated = moment(updatedData[0].updated)
