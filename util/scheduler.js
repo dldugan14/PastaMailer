@@ -71,7 +71,7 @@ async function scheduler() {
 
     Logger(`List of numbers: ${numberList}`)
     return {
-        message: `Hello everybody!\nDillon built out this app to let everyone know whos house pasta is at this week.\nIt sends a message once a week on friday at noon.\n\nThis week, pasta is at ${nextUp.names}'s house. Cheers! \n\n\nP.S. To remove yourself from this list reply to this number with "STOP"`,
+        message: `This week, pasta is at ${nextUp.names}'s house. Cheers! \n\nP.S. To remove yourself from this list reply to this number with "STOP"`,
         numberList
     }
 }
