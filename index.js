@@ -91,5 +91,6 @@ app.get('/test', (req, res) => {
 });
 
 http.createServer(app).listen(process.env.PORT || 4000, () => {
+     Logger(`Express server listening on port ${process.env.PORT || 4000}`)
      console.log(`Express server listening on port ${process.env.PORT || 4000}`);
 });
