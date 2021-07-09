@@ -15,7 +15,7 @@ function sendMessages(message, numbers) {
         Logger(`Message sent Succssefully:\n    Number - ${number}\n    SID - ${message.sid}`);
       })
       .catch((error) => {
-        Logger(`ERROR: Message send failed.\n    error: ${error}`)
+        Logger(`ERROR: Message send failed.\n  Number - ${number}\n  error: ${error}`)
       });
   })
 }
