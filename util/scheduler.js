@@ -77,14 +77,16 @@ async function scheduler() {
 }
 
 async function removeFromList(number) {
-    Logger('Remove ' + number)
-    const res = await Users.updateOne({ phoneNumber: number }, { active: false });
+    Logger('Remove ' + number.slice(-10))
+    const res = await Users.updateOne({ phoneNumber: number.slice(-10) }, { active: false });
+    Logger(res.n, res.nModified)
 }
 
 
 async function addToList(number) {
-    Logger('Activate ' + number)
-    const res = await Users.updateOne({ phoneNumber: number }, { active: true });
+    Logger('Activate ' + number.slice(-10))
+    const res = await Users.updateOne({ phoneNumber: number.slice(-10) }, { active: true });
+    Logger(res.n, res.nModified)
 }
 
 module.exports = { addToList, removeFromList, scheduler }
