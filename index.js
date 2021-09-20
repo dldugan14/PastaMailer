@@ -34,8 +34,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // Every Friday at 12pm  "0 12 * * 5"
-let cron = schedule.scheduleJob("0 19 * * 5", async function () {
-     if(!STOP){
+let cron = schedule.scheduleJob("0 19 * * 3", async function () {
+     if (!STOP) {
           const updatedData = await Updated.find();
           const lastUpdated = moment(updatedData[0].updated)
 
@@ -66,7 +66,6 @@ app.post('/sms', (req, res) => {
           addToList(From.slice(1))
           twiml.message('Welcome Back! You have been added to the pasta notifications.');
      } else {
-
           twiml.message('Sorry Dillon didn\'t program in a response to that. 😅 ');
      }
 
@@ -83,8 +82,18 @@ app.get('/emergencystopstatus', (req, res) => {
      res.end(`${STOP}`);
 });
 
-app.get('/test', (req, res) => {
+app.post('/manual', async (req, res) => {
+     const { message } = req.body;
+     Logger(message);
+     Logger('Manually sending messages')
+     const { numberList } = await scheduler()
 
+     sendMessages(message, numberList)
+     res.writeHead(200, { 'Content-Type': 'text/xml' });
+     res.end('Sent!');
+});
+
+app.get('/test', (req, res) => {
      Logger('Test')
      res.writeHead(200, { 'Content-Type': 'text/xml' });
      res.end('hello');
