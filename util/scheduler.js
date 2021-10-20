@@ -2,6 +2,9 @@ const { Users } = require('../models/users')
 const { Rotation } = require('../models/rotation')
 const { LastUp } = require('../models/lastUp');
 const { Logger } = require('./logger');
+const { Updated } = require('./models/updated')
+const moment = require('moment')
+
 
 async function scheduler() {
     let users = []
@@ -87,6 +90,27 @@ async function addToList(number) {
     Logger('Activate ' + number.slice(-10))
     const res = await Users.updateOne({ phoneNumber: number.slice(-10) }, { active: true });
     Logger(res.n, res.nModified)
+}
+
+async function runSchedule() {
+    if (!STOP) {
+        const updatedData = await Updated.find();
+        const lastUpdated = moment(updatedData[0].updated)
+
+        if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
+
+            Logger('TGIF sending messages')
+            const { message, numberList } = await scheduler()
+
+            sendMessages(message, numberList)
+
+            Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
+        } else {
+            Logger(`Blocked by updated check\n    last updated ${lastUpdated.toString()}`)
+        }
+    } else {
+        Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`)
+    };
 }
 
 module.exports = { addToList, removeFromList, scheduler }
