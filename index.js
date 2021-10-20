@@ -4,6 +4,7 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const schedule = require('node-schedule');
+const { runSchedule } = require('./util/scheduler');
 const { smsHandler, manualText } = require("./util/sms");
 
 const mongoose = require('mongoose');

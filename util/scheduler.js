@@ -2,7 +2,7 @@ const { Users } = require('../models/users')
 const { Rotation } = require('../models/rotation')
 const { LastUp } = require('../models/lastUp');
 const { Logger } = require('./logger');
-const { Updated } = require('./models/updated')
+const { Updated } = require('../models/updated')
 const moment = require('moment')
 
 
@@ -113,4 +113,4 @@ async function runSchedule() {
     };
 }
 
-module.exports = { addToList, removeFromList, scheduler }
+module.exports = { addToList, removeFromList, scheduler, runSchedule }

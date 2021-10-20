@@ -1,8 +1,6 @@
 const { Logger } = require('./logger');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 const { addToList, removeFromList } = require('./scheduler');
-const { Logger } = require("./logger");
-
 
 function smsHandler(req, res) {
   const twiml = new MessagingResponse();
