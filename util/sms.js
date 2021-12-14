@@ -1,6 +1,7 @@
 const { Logger } = require('./logger');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
-const { addToList, removeFromList } = require('./scheduler');
+const { addToList, removeFromList, scheduler } = require('./scheduler');
+let STOP = false
 
 function smsHandler(req, res) {
   const twiml = new MessagingResponse();
@@ -22,8 +23,10 @@ function smsHandler(req, res) {
 
 
 function sendMessages(message, numbers) {
+  if (!STOP){
   const client = require('twilio')(process.env.SID, process.env.TOKEN);
   numbers.map((number) => {
+    Logger(`Attempting MAssage Send:\n    Number - ${number}\n    SID - ${message.sid}`);
     client.messages.create({
       body: message,
       from: process.env.FROMNUM,
@@ -38,16 +41,28 @@ function sendMessages(message, numbers) {
       });
   })
 }
+}
 
 async function manualText(req, res) {
   const { message } = req.body;
   Logger(message);
   Logger('Manually sending messages')
   const { numberList } = await scheduler()
-
   sendMessages(message, numberList)
   res.writeHead(200, { 'Content-Type': 'text/xml' });
   res.end('Sent!');
 }
 
-module.exports = { sendMessages, smsHandler, manualText }
+ function emergencyDisable() {
+   Logger('disabling sms');
+   Logger(STOP);
+   STOP = true;
+   Logger(STOP);
+ }
+
+ function getStopStatus() {
+   Logger("in get stop ")
+   return `${STOP}`;
+ }
+
+module.exports = { sendMessages, smsHandler, manualText, emergencyDisable, getStopStatus }

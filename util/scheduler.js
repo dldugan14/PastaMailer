@@ -93,24 +93,20 @@ async function addToList(number) {
 }
 
 async function runSchedule() {
-    if (!STOP) {
-        const updatedData = await Updated.find();
-        const lastUpdated = moment(updatedData[0].updated)
+    const updatedData = await Updated.find();
+    const lastUpdated = moment(updatedData[0].updated)
+     
+    if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
 
-        if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
+        Logger('Sending Messages')
+        const { message, numberList } = await scheduler()
 
-            Logger('TGIF sending messages')
-            const { message, numberList } = await scheduler()
-
-            sendMessages(message, numberList)
-
-            Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
-        } else {
-            Logger(`Blocked by updated check\n    last updated ${lastUpdated.toString()}`)
-        }
+        sendMessages(message, numberList)
+        
+        Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
     } else {
-        Logger(`Cron Skipped\n    Emergancy Code - ${STOP}`)
-    };
+            Logger(`Blocked by updated check\n    last updated ${lastUpdated.toString()}`)
+    }
 }
 
 module.exports = { addToList, removeFromList, scheduler, runSchedule }
