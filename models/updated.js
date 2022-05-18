@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const updated = new mongoose.Schema({
     updated: String
 });
 
-module.exports.Updated = mongoose.model('updated', updated, 'updated')
+export const Updated = mongoose.model('updated', updated, 'updated')

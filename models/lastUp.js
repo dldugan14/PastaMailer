@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const lastUp = new mongoose.Schema({
     lastUp: Number
 });
 
-module.exports.LastUp = mongoose.model('lastUp', lastUp, 'lastUp')
+export const LastUp = mongoose.model('lastUp', lastUp, 'lastUp')

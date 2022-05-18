@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const rotationSchema = new Schema([{
@@ -9,4 +9,4 @@ const rotationSchema = new Schema([{
     active: Boolean
 }])
 
-module.exports.Rotation = mongoose.model('rotation', rotationSchema, 'rotation')
+export const Rotation = mongoose.model('rotation', rotationSchema, 'rotation')

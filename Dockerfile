@@ -1,4 +1,4 @@
-FROM node:12.18-alpine
+FROM nodejs-current
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]

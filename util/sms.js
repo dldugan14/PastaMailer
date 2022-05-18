@@ -1,9 +1,10 @@
-const { Logger } = require('./logger');
-const MessagingResponse = require('twilio').twiml.MessagingResponse;
-const { addToList, removeFromList, scheduler } = require('./scheduler');
+import Logger from './logger.js';
+import twilio from 'twilio';
+const MessagingResponse = twilio.twiml.MessagingResponse;
+import { addToList, removeFromList, scheduler } from './scheduler.js';
 let STOP = false
 
-function smsHandler(req, res) {
+ export function smsHandler(req, res) {
   const twiml = new MessagingResponse();
   const { Body, From } = req.body;
   Logger(`Incoming Message:\n    From - ${From}\n    Message - ${Body}`)
@@ -22,11 +23,11 @@ function smsHandler(req, res) {
 }
 
 
-function sendMessages(message, numbers) {
+ export function sendMessages(message, numbers) {
   if (!STOP){
-  const client = require('twilio')(process.env.SID, process.env.TOKEN);
+  const client = twilio(process.env.SID, process.env.TOKEN);
   numbers.map((number) => {
-    Logger(`Attempting MAssage Send:\n    Number - ${number}\n    SID - ${message.sid}`);
+    Logger(`Attempting Message Send:\n    Number - ${number}\n    SID - ${message.sid}`);
     client.messages.create({
       body: message,
       from: process.env.FROMNUM,
@@ -40,29 +41,29 @@ function sendMessages(message, numbers) {
         Logger(`ERROR: Message send failed.\n  Number - ${number}\n  error: ${error}`)
       });
   })
-}
+}else { Logger("ERROR: Emengency Stop Active")}
 }
 
-async function manualText(req, res) {
+export async function manualText(req, res) {
   const { message } = req.body;
-  Logger(message);
   Logger('Manually sending messages')
-  const { numberList } = await scheduler()
+  
+    const { numberList } = await scheduler()
+  Logger(numberList)
   sendMessages(message, numberList)
   res.writeHead(200, { 'Content-Type': 'text/xml' });
   res.end('Sent!');
+ 
 }
 
- function emergencyDisable() {
+  export function emergencyDisable() {
    Logger('disabling sms');
    Logger(STOP);
    STOP = true;
    Logger(STOP);
  }
 
- function getStopStatus() {
+  export function getStopStatus() {
    Logger("in get stop ")
    return `${STOP}`;
  }
-
-module.exports = { sendMessages, smsHandler, manualText, emergencyDisable, getStopStatus }

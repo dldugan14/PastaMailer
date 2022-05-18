@@ -1,12 +1,13 @@
-const { Users } = require('../models/users')
-const { Rotation } = require('../models/rotation')
-const { LastUp } = require('../models/lastUp');
-const { Logger } = require('./logger');
-const { Updated } = require('../models/updated')
-const moment = require('moment')
+import { Users } from '../models/users.js'
+import { Rotation } from '../models/rotation.js'
+import { LastUp } from '../models/lastUp.js'
+import  Logger  from './logger.js'
+import { Updated } from '../models/updated.js'
+import { sendMessages } from './sms.js'
+import moment from 'moment';
 
 
-async function scheduler() {
+export async function scheduler() {
     let users = []
     let rotationData = []
     let lastUpData = []
@@ -51,7 +52,7 @@ async function scheduler() {
 
     try {
         const res = await LastUp.updateOne({ lastUp: lastUp }, { lastUp: nextUp.rotationPosition });
-        Logger(`Update info: ${res}`)
+        Logger(`Update info: ${JSON.stringify(res)}`)
     } catch (error) {
         Logger(`ERROR: db connection issue: ${error}`)
     }
@@ -79,34 +80,70 @@ async function scheduler() {
     }
 }
 
-async function removeFromList(number) {
+export async function removeFromList(number) {
     Logger('Remove ' + number.slice(-10))
     const res = await Users.updateOne({ phoneNumber: number.slice(-10) }, { active: false });
     Logger(res.n, res.nModified)
 }
 
 
-async function addToList(number) {
+export async function addToList(number) {
     Logger('Activate ' + number.slice(-10))
     const res = await Users.updateOne({ phoneNumber: number.slice(-10) }, { active: true });
     Logger(res.n, res.nModified)
 }
 
-async function runSchedule() {
+export async function runSchedule() {
     const updatedData = await Updated.find();
     const lastUpdated = moment(updatedData[0].updated)
-     
-    if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
+    try {   
+        if (moment().subtract(6, 'days').valueOf() >= lastUpdated.valueOf()) {
 
-        Logger('Sending Messages')
-        const { message, numberList } = await scheduler()
+            Logger('Sending Messages')
+            const { message, numberList } = await scheduler()
 
-        sendMessages(message, numberList)
+            sendMessages(message, numberList)
         
-        Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
-    } else {
+            Updated.updateOne({ updated: updatedData.updated }, { updated: moment().format() });
+        } else {
             Logger(`Blocked by updated check\n    last updated ${lastUpdated.toString()}`)
+        }
+    } catch (error) {
+        Logger(error)
     }
 }
 
-module.exports = { addToList, removeFromList, scheduler, runSchedule }
+
+export async function tradePastas(inUser, outUser) {
+    let rotationData = []
+
+    try {
+        rotationData = await Rotation.find();
+    } catch (error) {
+        Logger(`db Connection error: ${error}`)
+        return "Sorry! Something went wrong!";
+    }
+
+    const foundOutUser = rotationData.find(element => element.names.toLowerCase().includes(outUser));
+    const foundInUser = rotationData.find(element => element.names.toLowerCase().includes(inUser));
+    
+    if(!foundInUser) {
+        return `Can't find ${inUser}`
+    } else if (!foundOutUser) {
+        return `Can't find ${outUser}`
+    } 
+
+let newFoundIn = { ...foundInUser._doc, swap: true, swapWith: foundOutUser.id }
+let newFoundOut = { ...foundOutUser._doc, swap: true, swapWith: foundInUser.id }
+Logger(foundInUser)
+Logger(foundOutUser)
+Logger(newFoundIn)
+Logger(newFoundOut)
+
+    Rotation.findOneAndUpdate({ _id: foundInUser._id }, newFoundIn);
+    Rotation.findOneAndUpdate({ _id: foundOutUser._id }, newFoundOut);
+
+    return `Awesome! Swaped ${foundOutUser.names}'s Pasta with ${foundInUser.names}'s Pasta.`
+}
+
+

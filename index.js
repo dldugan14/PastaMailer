@@ -1,14 +1,16 @@
-require("dotenv").config();
+import dotenv from "dotenv";
 
-const http = require('http');
-const express = require('express');
-const bodyParser = require('body-parser');
-const schedule = require('node-schedule');
-const { runSchedule } = require('./util/scheduler');
-const { smsHandler, manualText, emergencyDisable, getStopStatus} = require("./util/sms");
+dotenv.config()
 
-const mongoose = require('mongoose');
-const { Logger } = require("./util/logger");
+import http from 'http';
+import express from 'express';
+import bodyParser from 'body-parser';
+import schedule from 'node-schedule';
+import { runSchedule, tradePastas } from './util/scheduler.js';
+import { smsHandler, manualText, emergencyDisable, getStopStatus} from "./util/sms.js";
+
+import mongoose from 'mongoose';
+import  Logger  from "./util/logger.js";
 mongoose.connect('mongodb://mongodb:27017/pasta', { useNewUrlParser: true, useUnifiedTopology: true })
 
 const db = mongoose.connection;
@@ -44,7 +46,9 @@ app.get('/emergencystopstatus', (req, res) => {
      res.end(getStopStatus());
 });
 
-app.post('/manual', manualText);
+app.post('/manual',  (req, res) => {
+     manualText(req, res);
+});
 
 app.get('/test', (req, res) => {
      Logger('Test')
@@ -52,10 +56,27 @@ app.get('/test', (req, res) => {
      res.end('hello');
 });
 
-app.post('/test', (req, res) => {
-     Logger('Test')
-     res.writeHead(200, { 'Content-Type': 'text/xml' });
-     res.end('hello');
+app.post('/trade', async (req, res) => {
+     let responseString;
+
+     const { Memory } = req.body;
+     let data = JSON.parse(Memory)
+
+     const outUser = data.twilio.collected_data.trade.answers.OUT.answer;
+     const inUser = data.twilio.collected_data.trade.answers.IN.answer;
+
+     
+     responseString = await tradePastas(inUser.toLowerCase(), outUser.toLowerCase());
+     Logger(responseString);
+   
+     res.writeHead(200, { 'Content-Type': 'application/json' });
+     res.end(JSON.stringify({
+          "actions": [
+            {
+           "say": responseString
+            }
+          ]
+        }));
 });
 
 let server = app.listen(process.env.PORT || 4000, () => {

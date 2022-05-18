@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A service that notifies my family whos turn it is to cook pasta.",
   "main": "index.js",
-  "scripts": {
+  "type": "module",
+    "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
     "dev": "nodemon --exec babel-node src/index.js"
   },
