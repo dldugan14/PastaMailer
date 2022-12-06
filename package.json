@@ -21,10 +21,10 @@
   "homepage": "https://github.com/dldugan14/PastaMailer#readme",
   "dependencies": {
     "atpl": "^0.9.3",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "dotenv": "^8.0.0",
     "eslint": "^7.27.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "http": "0.0.0",
     "moment": "^2.29.1",
     "mongoose": "^5.12.12",
